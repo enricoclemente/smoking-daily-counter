@@ -1,15 +1,19 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+const storagePath = path.join(process.cwd(), 'storage');
+
 // Endpoint to get data
 app.get('/data', (req, res) => {
     try {
-        const fileContent = fs.readFileSync('./storage/data.json', 'utf8');
+        const fileContent = fs.readFileSync(storagePath + '/data.json', 'utf8');
         res.send(fileContent);
     } catch (err) {
         console.log(err)
@@ -25,7 +29,7 @@ app.put('/data/:date', (req, res) => {
 
     try {
         // Attempt to read the file. If it doesn't exist or an error occurs, catch block will handle it.
-        fileData = fs.readFileSync('./storage/data.json', 'utf8');
+        fileData = fs.readFileSync(storagePath + '/data.json', 'utf8');
         
         // Parse the JSON data from the file
         fileData = JSON.parse(fileData);
@@ -43,7 +47,7 @@ app.put('/data/:date', (req, res) => {
     fileData[date].Stefano = req.body.Stefano || fileData[date].Stefano;
 
     // Write the updated data back to the JSON file
-    fs.writeFileSync('./storage/data.json', JSON.stringify(fileData, null, 2));
+    fs.writeFileSync(storagePath + '/data.json', JSON.stringify(fileData, null, 2));
     
     res.status(200).send('Data updated successfully');
 });
