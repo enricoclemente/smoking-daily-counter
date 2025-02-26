@@ -11,7 +11,7 @@ app.use(cors());
 const storagePath = path.join(process.cwd(), 'storage');
 
 // Endpoint to get data
-app.get('/data', (req, res) => {
+app.get('/api/data', (req, res) => {
     try {
         const fileContent = fs.readFileSync(storagePath + '/data.json', 'utf8');
         res.send(fileContent);
@@ -22,7 +22,7 @@ app.get('/data', (req, res) => {
 });
 
 // Endpoint to update data
-app.put('/data/:date', (req, res) => {
+app.put('/api/data/:date', (req, res) => {
     const date = req.params.date;
     // Ensure fileData is an object if it wasn't initialized within the catch block above.
     let fileData = {};
@@ -53,4 +53,8 @@ app.put('/data/:date', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, () => {
+    const host = server.address().address;
+    const port = server.address().port;
+    console.log('Server running at http://' + host + ':' + port)
+});
