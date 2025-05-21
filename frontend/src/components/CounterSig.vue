@@ -31,16 +31,18 @@ export default {
       this.updateCounter();
     },
     decrement() {
-      this.count -= 1;
-      this.updateCounter();
+      if(this.count >= 0) {
+        this.count -= 1;
+        this.updateCounter();
+      }
     },
     async updateCounter() {
       const date = new Date().toISOString().split('T')[0];
-      await http.put(`/data/${date}`, { [this.label]: this.count });
+      await http.put(`/api/data/${date}`, { [this.label]: this.count });
     },
     async getCounters(date) {
       try {
-        const response = await http.get(`/data`);
+        const response = await http.get(`/api/data`);
         if (!response.data[date]) {
           this.count = 0
         } else {
