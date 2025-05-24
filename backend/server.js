@@ -25,23 +25,38 @@ const DATA_FILE = 'data.json'
 const SECRET = 'supersegreto';
 const USERS_FILE = 'users.json';
 
+// Funzione per creare la directory se non esiste
+function ensureDirectoryExists(filePath) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true }); // Crea tutte le cartelle mancanti
+  }
+}
+
 function getUsers() {
-  console.log(path.join(STORAGE_PATH, USERS_FILE))
+  const usersPath = path.join(STORAGE_PATH, USERS_FILE);
+  console.log(usersPath)
+  // Crea la directory se manca
+  ensureDirectoryExists(usersPath);
+
   if (!fs.existsSync(path.join(STORAGE_PATH, USERS_FILE))) {
     try {
-      fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify([], null, 2), 'utf8');
+      fs.writeFileSync(usersPath, JSON.stringify([], null, 2), 'utf8');
       console.log('File creato con successo!');
     } catch (err) {
       console.error('Errore durante la creazione del file:', err);
     }
     return [];
   }
-  return JSON.parse(fs.readFileSync(path.join(STORAGE_PATH, USERS_FILE)));
+  return JSON.parse(fs.readFileSync(usersPath));
 }
 
 function saveUsers(users) {
-  console.log(path.join(STORAGE_PATH, USERS_FILE))
-  fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify(users, null, 2), 'utf-8');
+  const usersPath = path.join(STORAGE_PATH, USERS_FILE);
+  console.log(usersPath)
+  // Crea la directory se manca
+  ensureDirectoryExists(usersPath);
+  fs.writeFileSync(usersPath, JSON.stringify(users, null, 2), 'utf-8');
 }
 
 app.post('/api/register', async (req, res) => {
@@ -59,10 +74,10 @@ app.post('/api/register', async (req, res) => {
 
   const hashed = await bcrypt.hash(password, 10);
   users.push({ email, password: hashed, nickname });
-  console.log("New user registered: ")
-  console.log({ email, password: hashed, nickname })
   try {
     saveUsers(users);
+    console.log("New user registered: ")
+    console.log({ email, password: hashed, nickname })
     res.send('Registrazione avvenuta con successo');
   } catch(err) {
     console.error('Errore in /api/register:', err); // Identifica l'errore
