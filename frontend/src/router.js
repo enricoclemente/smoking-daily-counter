@@ -5,6 +5,7 @@ import UserRegister from './components/UserRegister.vue';
 import UserLogin from './components/UserLogin.vue';
 
 const routes = [
+    { path: '/login', component: UserDashboard },
     { path: '/login', component: UserLogin },
     { path: '/register', component: UserRegister },
     { path: '/dashboard', component: UserDashboard }

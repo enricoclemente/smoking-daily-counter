@@ -1,10 +1,8 @@
 <template>
-  <div id="app">
-    <header>
-      <h1>Io e i miei polmoni</h1>
-    </header>
-    <CounterSig :label="nickname" />
-  </div>
+  <header>
+    <h1>Io e i miei polmoni</h1>
+  </header>
+  <CounterSig :label="nickname" />
 </template>
 
 <script>
