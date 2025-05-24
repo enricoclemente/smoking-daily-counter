@@ -10,7 +10,12 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(cors({
-  origin: process.env.VUE_APP_FRONT_URL || `http://localhost:8080`,
+  origin: [
+    process.env.VUE_APP_FRONT_URL,
+    `http://localhost:8080`
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true // Permetti cookie/headers di autenticazione
 }));
 app.use(express.json());
