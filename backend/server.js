@@ -9,15 +9,12 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3001;
 
 const app = express();
-app.use(cors({
-  origin: [
-    process.env.VUE_APP_FRONT_URL,
-    `http://localhost:8080`
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true // Permetti cookie/headers di autenticazione
-}));
+// 1. Middleware CORS globale
+app.use(cors());
+
+// 2. Gestione richieste OPTIONS
+app.options('*', cors());
+
 app.use(express.json());
 app.use(bodyParser.json());
 
