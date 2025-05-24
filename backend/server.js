@@ -6,10 +6,16 @@ const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+const PORT = process.env.PORT || 3001;
+
 const app = express();
+app.use(cors({
+  origin: process.env.VUE_APP_FRONT_URL || `http://localhost:8080`,
+  credentials: true // Permetti cookie/headers di autenticazione
+}));
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors());
+
 
 const STORAGE_PATH = path.join(process.cwd(), process.env.STORAGE || 'storage');
 const DATA_FILE = 'data.json'
@@ -202,7 +208,7 @@ const keepAlive = () => {
 
 keepAlive()
 
-const PORT = process.env.PORT || 3001;
+
 const server = app.listen(PORT, () => {
   const host = server.address().address;
   const port = server.address().port;
