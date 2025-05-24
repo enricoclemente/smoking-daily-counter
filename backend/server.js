@@ -132,8 +132,20 @@ app.get('/api/data/:date', authenticate, (req, res) => {
 
   const date = req.params.date;
 
+  const dataPath = path.join(STORAGE_PATH, DATA_FILE);
+  ensureDirectoryExists(dataPath)
+  if (!fs.existsSync(dataPath)) {
+    try {
+      fs.writeFileSync(dataPath, JSON.stringify([], null, 2), 'utf8');
+      console.log('File creato con successo!');
+    } catch (err) {
+      console.error('Errore durante la creazione del file:', err);
+    }
+  }
+
+  let fileData = {}
   try {
-    let fileData = fs.readFileSync(STORAGE_PATH + '/data.json', 'utf8');
+    fileData = fs.readFileSync(dataPath, 'utf8');
     fileData = JSON.parse(fileData);
 
     if (fileData[date] === undefined) {
@@ -142,9 +154,8 @@ app.get('/api/data/:date', authenticate, (req, res) => {
 
     res.send(fileData[date]);
   } catch (err) {
-    console.log(err)
-    res.status(404).send('File not found');
-  }
+    res.status(500).json({ error: err.message });
+  }  
 });
 
 app.get('/api/data/:date/:user', authenticate, (req, res) => {
@@ -153,8 +164,19 @@ app.get('/api/data/:date/:user', authenticate, (req, res) => {
   const date = req.params.date;
   const user = req.params.user;
 
+  const dataPath = path.join(STORAGE_PATH, DATA_FILE);
+  ensureDirectoryExists(dataPath)
+  if (!fs.existsSync(dataPath)) {
+    try {
+      fs.writeFileSync(dataPath, JSON.stringify([], null, 2), 'utf8');
+      console.log('File creato con successo!');
+    } catch (err) {
+      console.error('Errore durante la creazione del file:', err);
+    }
+  }
+
   try {
-    let fileData = fs.readFileSync(path.join(STORAGE_PATH, DATA_FILE), 'utf8');
+    let fileData = fs.readFileSync(dataPath, 'utf8');
     fileData = JSON.parse(fileData);
 
     if (fileData[date] === undefined) {
@@ -166,8 +188,7 @@ app.get('/api/data/:date/:user', authenticate, (req, res) => {
 
     res.json({ count: fileData[date][user] });
   } catch (err) {
-    console.log(err)
-    res.status(404).send('File not found');
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -178,12 +199,23 @@ app.put('/api/data/:date/:user', authenticate, (req, res) => {
   const date = req.params.date;
   const user = req.params.user;
 
+  const dataPath = path.join(STORAGE_PATH, DATA_FILE);
+  ensureDirectoryExists(dataPath)
+  if (!fs.existsSync(dataPath)) {
+    try {
+      fs.writeFileSync(dataPath, JSON.stringify([], null, 2), 'utf8');
+      console.log('File creato con successo!');
+    } catch (err) {
+      console.error('Errore durante la creazione del file:', err);
+    }
+  }
+
   // Ensure fileData is an object if it wasn't initialized within the catch block above.
   let fileData = {};
 
   try {
     // Attempt to read the file. If it doesn't exist or an error occurs, catch block will handle it.
-    fileData = fs.readFileSync(path.join(STORAGE_PATH, DATA_FILE), 'utf8');
+    fileData = fs.readFileSync(dataPath, 'utf8');
 
     // Parse the JSON data from the file
     fileData = JSON.parse(fileData);
@@ -200,7 +232,7 @@ app.put('/api/data/:date/:user', authenticate, (req, res) => {
   fileData[date][user] = req.body.count
 
   // Write the updated data back to the JSON file
-  fs.writeFileSync(path.join(STORAGE_PATH, DATA_FILE), JSON.stringify(fileData, null, 2));
+  fs.writeFileSync(dataPath, JSON.stringify(fileData, null, 2));
 
   res.status(200).send('Data updated successfully');
 });
