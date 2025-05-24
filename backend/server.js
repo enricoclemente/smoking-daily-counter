@@ -150,6 +150,31 @@ app.put('/api/data/:date/:user', authenticate, (req, res) => {
   res.status(200).send('Data updated successfully');
 });
 
+// Endpoint di health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
+// Keep-alive interno
+const keepAlive = () => {
+  const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+  
+  setInterval(async () => {
+    try {
+      const response = await fetch(`${url}/health`);
+      console.log(`Keep-alive ping: ${response.status} at ${new Date().toISOString()}`);
+    } catch (error) {
+      console.log('Keep-alive failed:', error.message);
+    }
+  }, 14 * 60 * 1000); // Ogni 14 minuti (Render va in sleep dopo 15 min)
+};
+
+keepAlive()
+
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, () => {
   const host = server.address().address;
