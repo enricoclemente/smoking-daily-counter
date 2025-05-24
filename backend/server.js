@@ -170,7 +170,7 @@ const keepAlive = () => {
     } catch (error) {
       console.log('Keep-alive failed:', error.message);
     }
-  }, 14 * 60 * 1000); // Ogni 14 minuti (Render va in sleep dopo 15 min)
+  }, 1 * 60 * 1000); // Ogni 14 minuti (Render va in sleep dopo 15 min)
 };
 
 keepAlive()
