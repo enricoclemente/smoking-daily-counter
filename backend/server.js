@@ -41,7 +41,7 @@ function getUsers() {
 
 function saveUsers(users) {
   console.log(path.join(STORAGE_PATH, USERS_FILE))
-  fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify(users, null, 2));
+  fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify(users, null, 2), 'utf-8');
 }
 
 app.post('/api/register', async (req, res) => {
