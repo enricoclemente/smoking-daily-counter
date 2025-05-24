@@ -11,21 +11,21 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
-const STORAGE_PATH = path.join(process.cwd(), 'storage');
+const STORAGE_PATH = path.join(process.cwd(), process.env.STORAGE || 'storage');
 const DATA_FILE = 'data.json'
 
 const SECRET = 'supersegreto';
 const USERS_FILE = 'users.json';
 
 function getUsers() {
-  console.log(path.join('storage', USERS_FILE))
-  if (!fs.existsSync(path.join('storage', USERS_FILE))) return [];
-  return JSON.parse(fs.readFileSync(path.join('storage', USERS_FILE)));
+  console.log(path.join(STORAGE_PATH, USERS_FILE))
+  if (!fs.existsSync(path.join(STORAGE_PATH, USERS_FILE))) return [];
+  return JSON.parse(fs.readFileSync(path.join(STORAGE_PATH, USERS_FILE)));
 }
 
 function saveUsers(users) {
-  console.log(path.join('storage', USERS_FILE))
-  fs.writeFileSync(path.join('storage', USERS_FILE), JSON.stringify(users, null, 2));
+  console.log(path.join(STORAGE_PATH, USERS_FILE))
+  fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify(users, null, 2));
 }
 
 app.post('/api/register', async (req, res) => {
@@ -101,7 +101,7 @@ app.get('/api/data/:date/:user', authenticate, (req, res) => {
   const user = req.params.user;
 
   try {
-    let fileData = fs.readFileSync(STORAGE_PATH + '/data.json', 'utf8');
+    let fileData = fs.readFileSync(path.join(STORAGE_PATH, DATA_FILE), 'utf8');
     fileData = JSON.parse(fileData);
 
     if (fileData[date] === undefined) {
@@ -128,7 +128,7 @@ app.put('/api/data/:date/:user', authenticate, (req, res) => {
 
   try {
     // Attempt to read the file. If it doesn't exist or an error occurs, catch block will handle it.
-    fileData = fs.readFileSync(STORAGE_PATH + '/data.json', 'utf8');
+    fileData = fs.readFileSync(path.join(STORAGE_PATH, DATA_FILE), 'utf8');
 
     // Parse the JSON data from the file
     fileData = JSON.parse(fileData);
@@ -145,7 +145,7 @@ app.put('/api/data/:date/:user', authenticate, (req, res) => {
   fileData[date][user] = req.body.count
 
   // Write the updated data back to the JSON file
-  fs.writeFileSync(STORAGE_PATH + '/data.json', JSON.stringify(fileData, null, 2));
+  fs.writeFileSync(path.join(STORAGE_PATH, DATA_FILE), JSON.stringify(fileData, null, 2));
 
   res.status(200).send('Data updated successfully');
 });
