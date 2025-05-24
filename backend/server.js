@@ -61,8 +61,13 @@ app.post('/api/register', async (req, res) => {
   users.push({ email, password: hashed, nickname });
   console.log("New user registered: ")
   console.log({ email, password: hashed, nickname })
-  saveUsers(users);
-  res.send('Registrazione avvenuta con successo');
+  try {
+    saveUsers(users);
+    res.send('Registrazione avvenuta con successo');
+  } catch(err) {
+    console.error('Errore in /api/register:', err); // Identifica l'errore
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/api/login', async (req, res) => {
