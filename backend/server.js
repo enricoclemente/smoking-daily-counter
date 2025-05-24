@@ -20,7 +20,12 @@ const USERS_FILE = 'users.json';
 function getUsers() {
   console.log(path.join(STORAGE_PATH, USERS_FILE))
   if (!fs.existsSync(path.join(STORAGE_PATH, USERS_FILE))) {
-    fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify([], null, 2));
+    try {
+      fs.writeFileSync(path.join(STORAGE_PATH, USERS_FILE), JSON.stringify([], null, 2), 'utf8');
+      console.log('File creato con successo!');
+    } catch (err) {
+      console.error('Errore durante la creazione del file:', err);
+    }
     return [];
   }
   return JSON.parse(fs.readFileSync(path.join(STORAGE_PATH, USERS_FILE)));
