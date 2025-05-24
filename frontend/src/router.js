@@ -15,27 +15,6 @@ const router = createRouter({
   routes
 });
 
-// Navigation Guard
-router.beforeEach((to, from, next) => {
-  console.log('Navigating to:', to.path)
-  console.log('Requires auth:', to.meta.requiresAuth)
-  
-  const isAuthenticated = checkAuthStatus()
-  console.log('Is authenticated:', isAuthenticated)
-  
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    console.log('Redirecting to login')
-    next('/login')
-  } else {
-    next()
-  }
-})
-
-function checkAuthStatus() {
-  const token = localStorage.getItem('authToken')
-  return token && !isTokenExpired(token)
-}
-
 function isTokenExpired(token) {
   if (!token) return true;
   
@@ -55,5 +34,27 @@ function isTokenExpired(token) {
     return true; // Se non riesco a decodificare, considero il token scaduto
   }
 }
+
+function checkAuthStatus() {
+  const token = localStorage.getItem('token')
+  return token && !isTokenExpired(token)
+}
+
+// Navigation Guard
+router.beforeEach((to, from, next) => {
+  console.log('Navigating to:', to.path)
+  console.log('Requires auth:', to.meta.requiresAuth)
+  
+  const isAuthenticated = checkAuthStatus()
+  console.log('Is authenticated:', isAuthenticated)
+  
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    console.log('Redirecting to login')
+    next('/login')
+  } else {
+    next()
+  }
+})
+  
 
 export default router;

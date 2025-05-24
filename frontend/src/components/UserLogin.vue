@@ -24,7 +24,7 @@ export default {
         });
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('nickname', res.data.nickname);
-        this.$router.push('/dashboard');
+        this.$router.push('/');
       } catch (e) {
         alert('Login fallito');
       }

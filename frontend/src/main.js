@@ -15,10 +15,11 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-// Configura l'interceptor di response dopo aver creato l'app
 axios.interceptors.response.use(
   response => response,
   error => {
+    console.log("Error by interceptor")
+    console.log(error.response)
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       localStorage.removeItem('token');
       // Ora il router è disponibile
