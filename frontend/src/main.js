@@ -15,8 +15,6 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-const app = createApp(App);
-
 // Configura l'interceptor di response dopo aver creato l'app
 axios.interceptors.response.use(
   response => response,
@@ -24,11 +22,13 @@ axios.interceptors.response.use(
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       localStorage.removeItem('token');
       // Ora il router è disponibile
-      app.config.globalProperties.$router.push('/login');
+      router.push('/login');
     }
     return Promise.reject(error);
   }
 );
+
+const app = createApp(App);
 
 app.config.globalProperties.axios = axios;
 
